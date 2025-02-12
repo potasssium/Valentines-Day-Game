@@ -5,9 +5,45 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fighting game</title>
+    <style>
+        /* Timer Styling */
+        #counter-container {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 30px;
+            font-weight: bold;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            width: 120px;
+        }
+
+        /* Flashing animation when timer is low */
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+
+        /* Red warning effect when time < 10 */
+        .danger {
+            color: red;
+            animation: pulse 0.5s infinite;
+        }
+    </style>
 </head>
 <body>
     <script src="https://unpkg.com/kaboom@3000.0.0-beta.2/dist/kaboom.js"></script>
-    <script src="./main.js"></script>
+    <script src="main.js" defer></script>
+
+    <!-- Timer -->
+    <div id="counter-container">Time: <span id="counter">60</span></div>
+    
+  
 </body>
 </html>

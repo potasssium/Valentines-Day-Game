@@ -2,11 +2,86 @@ kaboom({
   width: 1280,
   height: 720,
   scale: 0.7,
-  debug: false
+  debug: true
 })
 
-loadSprite("background", "assets/background/background_layer_1.png")
-loadSprite("trees", "assets/background/background_layer_2.png")
+let countInterval = null; // Timer reference
+let timeLeft = 60;
+let gameOver = false;
+window.player1 = null;
+window.player2 = null;
+
+
+function declareWinner() {
+    if (gameOver) return 
+    gameOver = true 
+
+    const winnerTextElement = document.getElementById("winner-text");
+    if (!winnerTextElement) return;
+
+    let result;
+    if (window.player1.health > 0 && window.player2.health > 0) {
+        result = "Time's up! It's a Tie!";
+    } else if (window.player1.health > 0) {
+        result = "Player 1 Wins!";
+    } else {
+        result = "Player 2 Wins!";
+    }
+
+
+
+    winnerTextElement.textContent = result;
+    winnerTextElement.style.display = "block";
+
+ 
+    clearInterval(countInterval);
+
+  
+    setTimeout(() => {
+        winnerTextElement.style.display = "none";
+        go("fight"); // Restart the game
+    }, 3000);
+}
+
+
+function startTimer() {
+    const counterElement = document.getElementById("counter");
+    if (!counterElement) return;
+
+    timeLeft = 60; // Reset Timer
+    counterElement.textContent = timeLeft;
+    gameOver = false; 
+
+    if (countInterval) {
+        clearInterval(countInterval); // Stop Previous Timer
+    }
+
+    countInterval = setInterval(() => {
+        if (timeLeft === 0) {
+            clearInterval(countInterval);
+            declareWinner();
+            return;
+        }
+
+        timeLeft--;
+        counterElement.textContent = timeLeft;
+
+        // Timer flashes red when time is low
+        if (timeLeft <= 10) {
+            counterElement.classList.add("danger");
+        } else {
+            counterElement.classList.remove("danger");
+        }
+    }, 1000);
+}
+
+
+
+loadSprite("background", "img/5.png")
+loadSprite("mountain", "img/4.png")
+loadSprite("trees", "img/3.png")
+loadSprite("fullt", "img/2.png")
+loadSprite("snow", "img/1.png")
 loadSpriteAtlas("assets/oak_woods_tileset.png", {
   "ground-golden": {
       "x": 16,
@@ -18,7 +93,7 @@ loadSpriteAtlas("assets/oak_woods_tileset.png", {
       "x": 16,
       "y": 32,
       "width": 16,
-      "height": 30
+      "height": 30,
   },
   "ground-silver": {
       "x": 150,
@@ -28,20 +103,6 @@ loadSpriteAtlas("assets/oak_woods_tileset.png", {
   }
 })
 
-loadSprite("shop", "assets/shop_anim.png", {
-  sliceX: 6,
-  sliceY: 1,
-  anims: {
-      "default": {
-          from: 0,
-          to: 5,
-          speed: 12,
-          loop: true
-      }
-  }
-})
-loadSprite("fence", "assets/fence_1.png")
-loadSprite("sign", "assets/sign.png")
 
 loadSprite("idle-player1", "img/druid/Idle-1.png", {
   sliceX: 8, sliceY: 1, anims: { "idle": {from: 0, to: 7, speed: 5, loop: true}}
@@ -61,9 +122,7 @@ loadSprite("death-player1", "assets/death-player1.png", {
 loadSprite("shoot-player1", "img/druid/Charge_2-1.png.png", {
     sliceX: 6, sliceY: 1, anims: { "shoot": { from: 0, to: 4, speed: 4}}
 })
-loadSprite("attack2-player1", "img/druid/Attack_2-1(1).png.png", {
-    sliceX: 9, sliceY: 1, anims: { "shoot": { from: 0, to: 9, speed: 4}}
-})
+
 
 loadSprite("idle-player2", "assets/idle-player2.png", {
   sliceX: 4, sliceY: 1, anims: { "idle": { from: 0, to: 3, speed: 8, loop: true}}
@@ -81,15 +140,43 @@ loadSprite("death-player2", "assets/death-player2.png", {
   sliceX: 7, sliceY: 1, anims: { "death": { from: 0, to: 6, speed: 10}}
 })
 
+
 scene("fight", () => {
   const background = add([
       sprite("background"),
-      scale(4)
+      scale(4),
+      pos(0, -220)
   ])
 
-  background.add([
-      sprite("trees"),
+ add([
+     sprite("mountain"),
+     scale(4),
+     pos(0, -210)
   ])
+
+  add([
+    sprite("trees"),
+    fixed(),
+    scale(4),
+    pos(0, -230)
+  ])
+  add([
+    sprite("snow"),
+    fixed(),
+    scale(8),
+    pos(0, -1010),
+    z(1),
+  ])
+  add([
+    sprite("fullt"),
+    fixed(),
+    scale(4),
+    pos(0, -240),
+
+  ])
+
+  let gameOver = false;
+ 
 
   const groundTiles = addLevel([
       "","","","","","","","","",
@@ -98,15 +185,15 @@ scene("fight", () => {
       "dddddddddddddddddddddddd"
       ], {
       tileWidth: 16,
-      tileHeight: 16,
+      tileHeight: 18,
       tiles: {
           "#": () => [
-              sprite("ground-golden"),
+              sprite("snow"),
               area(),
               body({isStatic: true})
           ],
           "-": () => [
-              sprite("ground-silver"),
+              sprite("snow"),
               area(),
               body({isStatic: true}),
           ],
@@ -120,12 +207,12 @@ scene("fight", () => {
   
   groundTiles.use(scale(4))
 
-  const shop = background.add([
-      sprite("shop"),
-      pos(170, 15),
-  ])
+ // const shop = background.add([
+  //    sprite("shop"),
+  //    pos(170, 15),
+ // ])
 
-  shop.play("default")
+ // shop.play("default")
 
  // left invisible wall
  add([
@@ -143,24 +230,12 @@ scene("fight", () => {
   pos(1280,0)
  ])
 
- background.add([
-  sprite("fence"),
-  pos(85, 125)
- ])
 
- background.add([
-  sprite("fence"),
-  pos(10, 125)
- ])
-
- background.add([
-  sprite("sign"),
-  pos(290, 115)
- ])
 
   function makePlayer(posX, posY, width, height, scaleFactor, id) {
       return add([
           pos(posX, posY),
+          z(3),
           scale(scaleFactor),
           area({shape: new Rect(vec2(0), width, height)}),
           anchor("center"),
@@ -323,23 +398,23 @@ scene("fight", () => {
 
   onKeyPress("space", () => {
       attack(player1, ["a", "d", "w"])
-      if (player1.health === 0) return;
+      if (player1.health === 0) return
 
-    const currentFlip = player1.flipX;
+    const currentFlip = player1.flipX
 
     // Play the attack animation first
-    player1.use(sprite(player1.sprites.attack));
-    player1.flipX = currentFlip;
+    player1.use(sprite(player1.sprites.attack))
+    player1.flipX = currentFlip
     player1.play("attack", {
         onEnd: () => {
-            resetPlayerToIdle(player1);
-            player1.flipX = currentFlip;
+            resetPlayerToIdle(player1)
+            player1.flipX = currentFlip
 
             // Once attack animation ends, shoot the projectile
-            shootProjectile(player1, 600, 50, player2);
+            shootProjectile(player1, 600, 50, player2)
         }
-    });
-});
+    })
+})
   
 
   onKeyRelease("space", () => {
@@ -385,22 +460,17 @@ scene("fight", () => {
       destroyAll(player2.id + "attackHitbox")
   })
   
-  const counter = add([
-      rect(100,100),
-      pos(center().x, center().y - 300),
-      color(10,10,10),
-      area(),
-      anchor("center")
-     ])
+  window.onload = () => {
+    const counterElement = document.getElementById("counter")
+
+    if (!counterElement) {
+        console.error("Counter element not found")
+        return
+    }
+}
+
+startTimer()
   
-  const count = counter.add([
-      text("60"),
-      area(),
-      anchor("center"),
-      {
-          timeLeft: 60,
-      }
-  ])
 
   const winningText = add([
       text(""),
@@ -409,35 +479,23 @@ scene("fight", () => {
       pos(center())
   ])
   
-  let gameOver = false
+
   onKeyDown("enter", () => gameOver ? go("fight") : null)
 
   function declareWinner(winningText, player1, player2) {
       if (player1.health > 0 && player2.health > 0
           || player1.health === 0 && player2.health === 0) {
-          winningText.text = "Tie!"
+          winningText.text = "There are no draws here, technically, you lost :)"
       } else if (player1.health > 0 && player2.health === 0) {
-          winningText.text = "Player 1 won!"
+          winningText.text = "You really thought winning would get you out of being my Valentine? dilusional"
           player2.use(sprite(player2.sprites.death))
           player2.play("death")
       } else {
-          winningText.text = "Player 2 won!"
+          winningText.text = "You really thought you could beat me, huh? Guess you're my Valentine :)"
           player1.use(sprite(player1.sprites.death))
           player1.play("death")
       }
   }
-
-  const countInterval = setInterval(() => {
-      if (count.timeLeft === 0) {
-          clearInterval(countInterval)
-          declareWinner(winningText, player1, player2)
-          gameOver = true
-  
-          return
-      }
-      count.timeLeft--
-      count.text = count.timeLeft
-  }, 1000)
 
   const player1HealthContainer = add([
       rect(500, 70),
@@ -504,7 +562,12 @@ scene("fight", () => {
           declareWinner(winningText, player1, player2)
           gameOver = true
       }
+    
+  
   })
 })
+
+
+
 
 go("fight")

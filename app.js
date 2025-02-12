@@ -4,6 +4,7 @@ function createWindow() {
     const win = new BrowserWindow({
         width: 1280,
         height: 720,
+        scale: 0.7,
         webPreferences: {
             nodeIntegration: true, // Allow Kaboom to work in Electron
             contextIsolation: false

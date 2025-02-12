@@ -1,3 +1,17 @@
+window.onload = function () {
+    // Get the start button and screen
+    const startScreen = document.getElementById("start-screen")
+    const startButton = document.getElementById("start-button")
+
+    // When the button is clicked, start the game
+    startButton.addEventListener("click", () => {
+        startScreen.style.display = "none"; // Hide start screen
+        startGame() // Run the game logic
+    })
+}
+
+function startGame() {
+
 kaboom({
   width: 1280,
   height: 720,
@@ -571,3 +585,4 @@ startTimer()
 
 
 go("fight")
+}

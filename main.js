@@ -161,6 +161,10 @@ window.onload = function () {
       initGame();
     });
 
+    noButton.addEventListener("click", () => {
+      
+    })
+
 
     scene("valentine-start", () => {
         console.log("valentine scene started");
@@ -374,10 +378,10 @@ window.onload = function () {
       
       // Optionally, change color on hover:
       yesButton.onHover(() => {
-        yesButton.use(color(0, 250, 0));
+        yesButton.color = rgb(255, 0, 0); // Update the existing color property
       });
       yesButton.onHoverEnd(() => {
-        yesButton.use(yesButton.defaultColor);
+        yesButton.color = rgb(255, 255, 255);
       });
     
     const noButton = add([
@@ -405,10 +409,10 @@ window.onload = function () {
     });
     
     noButton.onHover(() => {
-      noButton.use(color(250, 0, 0));
+      noButton.color = rgb(255, 0, 0);
     });
     noButton.onHoverEnd(() => {
-      noButton.use(noButton.defaultColor);
+      noButton.color = rgb(255, 255, 255);
     });
   }
   

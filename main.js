@@ -69,6 +69,7 @@ window.onload = function () {
       loadSprite("yes-button", "assets/sign.png");
       loadSprite("no-button", "assets/sign.png");
       loadSprite("floating-heart", "img/1.png");
+      loadSprite("snowflake", "img/snowflake.png");
   
       loadSprite("idle-player1", "img/druid/Idle-1.png", {
         sliceX: 8,
@@ -181,91 +182,65 @@ window.onload = function () {
             }
           }
         }
-      
-        // Define the custom transition function here
-        function transitionToAcceptScene() {
-          // Create an overlay that covers the entire screen.
-          const overlay = add([
-            rect(width(), height()),
-            pos(0, 0),
-            fixed(),
-            color(0, 0, 0),
-            opacity(0),
-            z(100),
-          ]);
-      
-          // Tween the overlay's opacity to fade it in
-          tween(overlay.opacity, 1, 1, (v) => {
-            overlay.opacity = v;
-          });
-      
-          // Tween the overlay to move upward off-screen (fan upward effect)
-          tween(
-            overlay.pos.y,
-            -height(),
-            2,
-            (v) => {
-              overlay.pos.y = v;
-            },
-            easings.easeInOutQuad,
-            () => {
-              // Once the tween is complete, destroy the overlay...
-              destroy(overlay);
-              // ...and show your new sprite and text box
-              add([
-                sprite("newSprite"), // Ensure "newSprite" is loaded via loadSprite()
-                pos(center()),
-                anchor("center"),
-                z(101),
-              ]);
-              add([
-                text("Welcome to the New Scene!", { size: 32, font: "sink" }),
-                pos(center().add(0, 150)),
-                anchor("center"),
-                z(101),
-                color(255, 255, 255),
-              ]);
+
+    // Add floating hearts
+    for (let i = 0; i < 20; i++) {
+        add([
+            sprite("floating-heart"),
+            pos(rand(0, width()), rand(0, height())),
+            scale(2),
+            "floating-heart",
+            {
+                speed: rand(50, 150),
+                amplitude: rand(50, 150),
+                offset: rand(0, Math.PI * 2)
             }
-          );
-        }
-      
-        function showChoiceButtons() {
-          add([
+        ])
+    }
+
+    onUpdate("floating-heart", (heart) => {
+        heart.pos.y += Math.sin(time() + heart.offset) * 0.5
+        heart.pos.x += Math.sin(time() + heart.offset) * 0.3
+        
+        if (heart.pos.y > height()) heart.pos.y = 0
+        if (heart.pos.x > width()) heart.pos.x = 0
+    })
+
+    const showChoiceButtons = () => {
+        add([
             sprite("yes-button"),
             pos(width() / 2 - 100, height() / 2 + 100),
             area(),
             scale(2),
-            "yes-btn",
-          ]).onClick(() => {
-            // Call the transition function instead of switching scene immediately
-            transitionToAcceptScene();
-          });
-      
-          add([
+            "yes-btn"
+        ]).onClick(() => {
+            go("accept-scene")
+        })
+
+        add([
             sprite("no-button"),
             pos(width() / 2 + 100, height() / 2 + 100),
             area(),
             scale(2),
-            "no-btn",
-          ]).onClick(() => {
-            go("reject-scene");
-          });
+            "no-btn"
+        ]).onClick(() => {
+            go("reject-scene")
+        })
+    }
+
+    typeText()
+
+    onClick(() => {
+        if (!isTyping && currentMessage < messages.length - 1) {
+            currentMessage++
+            currentChar = 0
+            isTyping = true
+            textObj.destroy()
+            textObj = null
+            typeText()
         }
-      
-        typeText();
-      
-        onClick(() => {
-          if (!isTyping && currentMessage < messages.length - 1) {
-            currentMessage++;
-            currentChar = 0;
-            isTyping = true;
-            textObj.destroy();
-            textObj = null;
-            typeText();
-          }
-        });
-      });
-      
+    })
+})
 
 // Accept Scene
 scene("accept-scene", () => {
@@ -320,6 +295,7 @@ scene("fight", () => {
     add([sprite("trees"), fixed(), scale(4), pos(0, -230)]);
     add([sprite("snow"), fixed(), scale(8), pos(0, -1010), z(1)]);
     add([sprite("fullt"), fixed(), scale(4), pos(0, -240)]);
+    add([sprite("f"), fixed(), scale(4), pos(0, -240)]);
 
     const groundTiles = addLevel(
       [

@@ -12,6 +12,8 @@ function createWindow() {
     });
 
     win.loadFile("index.html"); // Load the game
+
+    win.webContents.openDevTools();
 }
 
 app.whenReady().then(createWindow);

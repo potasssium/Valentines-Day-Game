@@ -1,0 +1,10 @@
+directories:
+  output: dist
+  buildResources: build
+appId: com.example.:D
+productName: ':D'
+win:
+  target: nsis
+  icon: img/icoheart.ico
+files: []
+electronVersion: 34.1.1

@@ -4,12 +4,23 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "dist": "electron-builder"
   },
+  "build": {
+    "appId": "com.example.:D",
+    "productName": ":D",
+    "win": {
+      "target": "nsis",  
+      "icon": "img/icoheart.ico"
+    }
+    },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^34.1.1"
+    "electron": "^34.1.1",
+    "electron-builder": "^25.1.8"
+  
   }
 }

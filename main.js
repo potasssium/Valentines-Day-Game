@@ -13,23 +13,30 @@ window.onload = function () {
     function startTimer() {
       const counterElement = document.getElementById("counter");
       if (!counterElement) return;
-  
+    
       // Clear any existing interval
       if (countInterval) clearInterval(countInterval);
-  
+    
       timeLeft = 60;
       counterElement.textContent = timeLeft;
       gameOver = false;
-  
+    
       countInterval = setInterval(() => {
         if (timeLeft <= 0) {
           clearInterval(countInterval);
+          
+          // Freeze the timer and change its appearance
+          counterElement.textContent = "0"; // Freeze at 0
+          counterElement.style.backgroundColor = "black"; // Solid background color
+          counterElement.style.color = "white"; // Contrast text color
+          // You can add any additional styling here, such as border or font size changes
+          
           declareWinner();
           return;
         }
         timeLeft--;
         counterElement.textContent = timeLeft;
-  
+    
         if (timeLeft <= 10) {
           counterElement.classList.add("danger");
         } else {
@@ -103,7 +110,7 @@ window.onload = function () {
         sliceY: 1,
         anims: { run: { from: 0, to: 1, speed: 8 } },
       });
-      loadSprite("death-player1", "assets/death-player1.png", {
+      loadSprite("death-player1", "img/druid/Dead-1.png.png", {
         sliceX: 8,
         sliceY: 1,
         anims: { death: { from: 0, to: 5, speed: 10 } },
@@ -145,12 +152,20 @@ window.onload = function () {
       loadSprite("trees", "img/3.png");
       loadSprite("fullt", "img/2.png");
       loadSprite("snow", "img/1.png");
+      loadSprite("large-spruce", "img/trees/Triangle Spruce Tree.png", {
+        sliceX: 27,
+        sliceY: 1,
+        anims: { sprucel: { from: 0, to: 26, speed: 6}}
+      })
+      loadSprite("small-spruce", "img/trees/Tiny Spruce Tree.png", {
+        sliceX: 31,
+        sliceY: 1,
+        anims: { spruces: { from: 0, to: 30, speed: 5}}
+      })
+
+
   
-      loadSpriteAtlas("assets/oak_woods_tileset.png", {
-        "ground-golden": { x: 16, y: 0, width: 16, height: 16 },
-        "deep-ground": { x: 16, y: 32, width: 16, height: 30 },
-        "ground-silver": { x: 150, y: 0, width: 16, height: 16 },
-      });
+     
     }
   
     loadGameAssets();
@@ -161,9 +176,7 @@ window.onload = function () {
       initGame();
     });
 
-    noButton.addEventListener("click", () => {
-      
-    })
+   
 
 
     scene("valentine-start", () => {
@@ -242,16 +255,13 @@ window.onload = function () {
 
     const showChoiceButtons = () => {
       const yesButton = add([
-        rect(150, 50),            // Draw a rectangle 150px x 50px
+        rect(150, 50, { radius: 10 }),
         pos(width() / 2 - 100, height() / 2 + 100),
-        color(0, 200, 0),         // Green background
-        area(),                   // Enables click detection
-        anchor("center"),         // Center the rectangle
-        "yes-btn",                // Tag for the button (optional)
-        {
-          onHoverColor: rgb(0, 250, 0), // Optional: a hover color effect
-          defaultColor: rgb(0, 200, 0),
-        }
+        color(255, 255, 255),
+        area(),
+        anchor("center"),
+        color(rgb(148, 148, 148)),
+        "yes-btn",
       ]);
       
       // Add text on top of the rectangle:
@@ -346,7 +356,7 @@ window.onload = function () {
                 z(200),
                 color(255, 255, 255)
               ]);
-              typeOutText(secondText, "I hope you enjoyed it a little, I wa", 0.08, () => {
+              typeOutText(secondText, "I hope you enjoyed it a little, I should've totally made it weirder.", 0.08, () => {
 
                 const thirdText = add([
                   text("", { size: 40, font: "sink" }),
@@ -355,7 +365,7 @@ window.onload = function () {
                   z(200),
                   color(255, 255, 255)
                 ]);
-                typeOutText(thirdText, "But I currently have a very 'oMg PrOgRaMmInG' brain.", 0.08, () => {
+                typeOutText(thirdText, "But thank you for putting up with me,", 0.08, () => {
                   const fourthText = add([
                     text("", { size: 40, font: "sink" }),
                     pos(100, 600), // Adjust Y position as needed (e.g., 150 instead of 100)
@@ -363,6 +373,7 @@ window.onload = function () {
                     z(200),
                     color(255, 255, 255)
                   ]);
+                  typeOutText(fourthText, "You deserve the world.", 0.09)
             
                 });
               });
@@ -381,20 +392,16 @@ window.onload = function () {
         yesButton.color = rgb(255, 0, 0); // Update the existing color property
       });
       yesButton.onHoverEnd(() => {
-        yesButton.color = rgb(255, 255, 255);
+        yesButton.color = rgb(148, 148, 148);
       });
     
     const noButton = add([
-      rect(150, 50),
+      rect(150, 50, { radius: 10 }),
       pos(width() / 2 + 100, height() / 2 + 100),
-      color(200, 0, 0),         // Red background
+      color(rgb(148, 148, 148)),
       area(),
       anchor("center"),
       "no-btn",
-      {
-        defaultColor: rgb(255, 255, 255),
-        onHoverColor: rgb(200, 0, 0),
-      }
     ]);
     
     const noText = add([
@@ -412,7 +419,7 @@ window.onload = function () {
       noButton.color = rgb(255, 0, 0);
     });
     noButton.onHoverEnd(() => {
-      noButton.color = rgb(255, 255, 255);
+      noButton.color = rgb(148, 148, 148);
     });
   }
   
@@ -433,14 +440,14 @@ window.onload = function () {
 
 
 scene("fight", () => {
-    console.log("⚔️ Fight scene loaded!");
+    console.log("Fight scene loaded");
 
     // Create players for this scene
-    window.player1 = makePlayer(100, 200, 16, 123, 3, "player1");
+    window.player1 = makePlayer(125, 200, 16, 123, 3, "player1");
     window.player1.use(sprite(window.player1.sprites.idle));
     window.player1.play("idle");
 
-    window.player2 = makePlayer(1000, 200, 16, 123, 2.8, "player2");
+    window.player2 = makePlayer(1100, 200, 16, 123, 2.8, "player2");
     window.player2.use(sprite(window.player2.sprites.idle));
     window.player2.play("idle");
     window.player2.flipX = true;
@@ -456,6 +463,23 @@ scene("fight", () => {
     add([sprite("snow"), fixed(), scale(8), pos(0, -1010), z(1)]);
     add([sprite("fullt"), fixed(), scale(4), pos(0, -240)]);
     add([sprite("snowflake"), fixed(), scale(-10), pos(0, -240)]);
+
+    const animatedBGs = [
+      { name: "large-spruce", anim: "sprucel", pos: vec2(960, 150), scale: 6 },
+      { name: "small-spruce", anim: "spruces", pos: vec2(210, 340), scale: 4 },
+      // You can add as many as you want here...
+    ];
+    
+    animatedBGs.forEach((bg) => {
+      const bgSprite = add([
+        sprite(bg.name),
+        pos(bg.pos),
+        scale(bg.scale),
+        fixed(), // if you want it to be part of the background
+        z(2),    // control layering via z-index
+      ]);
+      bgSprite.play(bg.anim); // start the animation for the sprite
+    });
 
     for (let i = 0; i < 100; i++) {
       add([
@@ -489,7 +513,7 @@ scene("fight", () => {
         tiles: {
           "#": () => [sprite("snow"), area(), body({ isStatic: true })],
           "-": () => [sprite("snow"), area(), body({ isStatic: true })],
-          d: () => [sprite("deep-ground"), area(), body({ isStatic: true })],
+          d: () => [sprite("snow"), area(), body({ isStatic: true })],
         },
       }
     );
@@ -578,79 +602,45 @@ scene("fight", () => {
     });
 
     // ----------------- Health Bars and Collisions -----------------
-    const player1HealthContainer = add([
-      rect(500, 60),
-      area(),
-      outline(5),
-      pos(90, 20),
-      color(200, 0, 0),
-    ]);
-    const player1HealthBar = player1HealthContainer.add([
-      rect(498, 65),
-      color(0, 180, 0),
-      pos(498, 70 - 2.5),
-      rotate(180),
-    ]);
+    const player1HealthUI = createHealthBarUI( 50, 50, 1000, 500);
+    const player2HealthUI = createHealthBarUI(width() - HEALTH_BAR_WIDTH - 50, 50, 500, 500);
+    window.player1.healthUI = player1HealthUI;
+    window.player2.healthUI = player2HealthUI;
 
-    const player2HealthContainer = add([
-      rect(500, 70),
-      area(),
-      outline(5),
-      pos(690, 20),
-      color(200, 0, 0),
-    ]);
-    const player2HealthBar = player2HealthContainer.add([
-      rect(498, 65),
-      color(0, 180, 0),
-      pos(2.5, 2.5),
-    ]);
+    // Store health bars in the player objects for collision handlers
+    window.player1.healthUI = player1HealthUI;
+    window.player2.healthUI = player2HealthUI;
 
-    // Store health bars in the player objects
-    window.player1.healthBar = player1HealthBar;
-    window.player2.healthBar = player2HealthBar;
 
+    if (window.player1 && window.player2) {
+      window.player1.onCollide(window.player2.id + "attackHitbox", () => {
+        if (gameOver) return;
+        if (window.player1.health !== 0) {
+          window.player1.health -= 50;
+          updateHealthBarUI(window.player1.healthUI, window.player1.health);
+        }
+        if (window.player1.health === 0) {
+          clearInterval(countInterval);
+          declareWinner();
+          gameOver = true;
+        }
+      });
+  
+      window.player2.onCollide(window.player1.id + "attackHitbox", () => {
+        if (gameOver) return;
+        if (window.player2.health !== 0) {
+          window.player2.health -= 50;
+          updateHealthBarUI(window.player2.healthUI, window.player2.health);
+        }
+        if (window.player2.health === 0) {
+          clearInterval(countInterval);
+          declareWinner();
+          gameOver = true;
+        }
+      });
+    }
     // Collision handlers for attacks
-    window.player1.onCollide(window.player2.id + "attackHitbox", () => {
-      if (gameOver) return;
-      if (window.player1.health !== 0) {
-        window.player1.health -= 50;
-        tween(
-          player1HealthBar.width,
-          window.player1.health,
-          1,
-          (val) => {
-            player1HealthBar.width = val;
-          },
-          easings.easeOutSine
-        );
-      }
-      if (window.player1.health === 0) {
-        clearInterval(countInterval);
-        declareWinner();
-        gameOver = true;
-      }
-    });
-
-    window.player2.onCollide(window.player1.id + "attackHitbox", () => {
-      if (gameOver) return;
-      if (window.player2.health !== 0) {
-        window.player2.health -= 50;
-        tween(
-          player2HealthBar.width,
-          window.player2.health,
-          1,
-          (val) => {
-            player2HealthBar.width = val;
-          },
-          easings.easeOutSine
-        );
-      }
-      if (window.player2.health === 0) {
-        clearInterval(countInterval);
-        declareWinner();
-        gameOver = true;
-      }
-    });
+    
 
     // Transition overlay to fade in the fight scene
     const transition = add([
@@ -671,6 +661,9 @@ scene("fight", () => {
       easings.easeInOutQuad
     );
   });
+  // Collision handlers for attacks
+
+
 
   scene("reject-scene", () => {
     console.log("reject scene loaded");
@@ -721,20 +714,47 @@ scene("fight", () => {
 
   // ----------------------- Helper Functions -----------------------
 
+  const HEALTH_BAR_WIDTH = 450;
+  const HEALTH_BAR_HEIGHT = 30;
+
+  function createHealthBarUI(x, y, initialHealth, maxHealth) {
+    const container = add([
+      rect(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT),
+      pos(x, y),
+      color(50, 50, 50), // dark gray background
+      outline(4, rgb(255, 255, 255)), // white border
+      anchor("topleft"),
+    ]);
+    const bar = add([
+      rect(HEALTH_BAR_WIDTH - 4, HEALTH_BAR_HEIGHT - 4),
+      pos(x + 2, y + 2),
+      color(0, 255, 0),
+      anchor("topleft"),
+    ]);
+    return { container, bar, maxHealth, currentHealth: initialHealth };
+  }
+
+  function updateHealthBarUI(healthUI, newHealth) {
+    healthUI.currentHealth = newHealth;
+    const newWidth = (HEALTH_BAR_WIDTH - 4) * (newHealth / healthUI.maxHealth);
+    tween(healthUI.bar.width, newWidth, 0.5, (val) => {
+      healthUI.bar.width = val;
+    });
+  }
+
   function declareWinner() {
     if (gameOver) return;
     gameOver = true;
-  
+
     let result;
     if (window.player1.health > 0 && window.player2.health > 0) {
       result = "There are no ties here, this means you lose.";
     } else if (window.player1.health > 0) {
-      result = "You really thought beating me would"
-      "get you out of this? dilusional";
+      result = "You really thought beating me would get you out of this? Delusional.";
     } else {
-      result = "You thought you could beat me, you're mine.";
+      result = "You thought you could beat me, huh? Now you're my Valentine :).";
     }
-  
+
     // Create a kaboom text object to show the winner message
     const winnerTextObj = add([
       text(result, { size: 48, font: "sink" }),
@@ -743,19 +763,20 @@ scene("fight", () => {
       z(100),
       color(255, 255, 255),
     ]);
-  
+
     if (countInterval) clearInterval(countInterval);
     if (counterContainer) counterContainer.style.display = "none";
-  
-    // After 3 seconds, remove the winner message and restart the fight scene
-    // Bind a key press to restart manually
+
     onKeyPress("enter", () => {
-        // Clear these objects before restarting, if needed
-        destroy(winnerTextObj);
-        destroy(restartPrompt);
-        go("fight");
-      });
-    }
+      destroy(winnerTextObj);
+      go("fight");
+    });
+  }
+    
+  
+    // Create a kaboom text object to show the winner message
+
+    
 
     function makePlayer(posX, posY, width, height, scaleFactor, id) {
       console.log(`Creating player ${id} at (${posX}, ${posY})`);
@@ -849,28 +870,19 @@ scene("fight", () => {
       }
     });
   
-    // On collision with the enemy (using the enemy's id as tag)
     projectile.onCollide(enemy.id, () => {
       if (enemy.health > 0) {
         enemy.health -= damage;
-        
-        // Tween the enemy's health bar (if defined)
         tween(
           enemy.healthBar.width,
           enemy.health,
           1,
-          (val) => {
-            enemy.healthBar.width = val;
-          },
+          (val) => { enemy.healthBar.width = val; },
           easings.easeOutSine
         );
-        
-        // Play the hurt animation on the enemy (make sure it exists)
         try {
           enemy.play("hurt");
-        } catch (e) {
-          // If no hurt animation exists, this error is safely ignored.
-        }
+        } catch (e) {}
       }
       
       if (enemy.health <= 0) {

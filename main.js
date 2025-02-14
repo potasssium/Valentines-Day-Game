@@ -136,7 +136,7 @@ window.onload = function () {
         sliceY: 1,
         anims: { attack: { from: 0, to: 9, speed: 9 } },
       });
-      loadSprite("run-player2", "img/witch/run.png", {
+      loadSprite("run-player2", "img/witch/Run.png", {
         sliceX: 8,
         sliceY: 1,
         anims: { run: { from: 0, to: 7, speed: 18 } },
@@ -389,7 +389,7 @@ window.onload = function () {
       
       // Optionally, change color on hover:
       yesButton.onHover(() => {
-        yesButton.color = rgb(255, 0, 0); // Update the existing color property
+        yesButton.color = rgb(0, 128, 0); // Update the existing color property
       });
       yesButton.onHoverEnd(() => {
         yesButton.color = rgb(148, 148, 148);

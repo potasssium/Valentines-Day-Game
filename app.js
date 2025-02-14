@@ -1,7 +1,9 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, Menu } = require("electron");
 
 function createWindow() {
+    Menu.setApplicationMenu(null);
     const win = new BrowserWindow({
+        
         width: 910,
         height: 570,
         maxWidth: 1280,
@@ -18,10 +20,14 @@ function createWindow() {
    // win.webContents.openDevTools();
 }
 
-app.whenReady().then(createWindow);
+app.whenReady()
+  .then(createWindow)
+  .catch((error) => {
+    console.error("Error during app initialization:", error);
+  });
 
 app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") {
-        app.quit();
-    }
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
 });

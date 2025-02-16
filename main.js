@@ -70,15 +70,15 @@ window.onload = function () {
       loadSprite("pixel-heart", "img/1.png");
       loadSprite("yes-button", "img/yes.png");
       loadSprite("no-button", "img/no.png");
-      loadSprite("floating-heart", "img/yespress/heart.png");
+      loadSprite("floating-heart", "img/yesbttn/heart.png");
       loadSprite("snowflake", "img/snowflake.png");
       loadSprite("new-background", "img/newback.jpg");
       loadSprite("background2", "img/A_black_image.jpg");
-      loadSprite("moon", "img/yespress/2.png")
-      loadSprite("cloud1", "img/yespress/3.png")
-      loadSprite("cloud2", "img/yespress/4.png")
+      loadSprite("moon", "img/yesbttn/2.png")
+      loadSprite("cloud1", "img/yesbttn/3.png")
+      loadSprite("cloud2", "img/yesbttn/4.png")
 
-      loadSprite("falling-star", "img/yespress/fallingstar.png", {
+      loadSprite("falling-star", "img/yesbttn/fallingstar.png", {
         sliceX: 9,
         sliceY: 1,
         anims: { star: { from: 0, to: 8, speed: 5, loop: false } },
@@ -115,33 +115,33 @@ window.onload = function () {
         anims: { shoot: { from: 0, to: 4, speed: 4 } },
       });
   
-      loadSprite("idle-player2", "img/witch/idle_1.png", {
+      loadSprite("idle-player2", "img/kitsune/idle_1.png", {
         sliceX: 8,
         sliceY: 1,
         anims: { idle: { from: 0, to: 7, speed: 4, loop: true } },
       });
-      loadSprite("jump-player2", "img/witch/jump_1.png", {
+      loadSprite("jump-player2", "img/kitsune/jump_1.png", {
         sliceX: 10,
         sliceY: 1,
         anims: { jump: { from: 0, to: 9, speed: 2, loop: true } },
       });
-      loadSprite("attack-player2", "img/witch/attack1.png", {
+      loadSprite("attack-player2", "img/kitsune/attack1.png", {
         sliceX: 10,
         sliceY: 1,
         anims: { attack: { from: 0, to: 9, speed: 9 } },
       });
-      loadSprite("run-player2", "img/witch/Run.png", {
+      loadSprite("run-player2", "img/kitsune/Run.png", {
         sliceX: 8,
         sliceY: 1,
         anims: { run: { from: 0, to: 7, speed: 18 } },
       });
-      loadSprite("death-player2", "img/witch/dead.png", {
+      loadSprite("death-player2", "img/kitsune/dead.png", {
         sliceX: 7,
         sliceY: 1,
         anims: { death: { from: 0, to: 6, speed: 10 } },
       });
 
-      loadSprite("shoot-player2", "img/witch/Fire_2.png", {
+      loadSprite("shoot-player2", "img/kitsune/Fire_2.png", {
         sliceX: 6,
         sliceY: 1,
         anims: { shoot: { from: 0, to: 4, speed: 4 } },
@@ -614,6 +614,10 @@ scene("fight", () => {
 
       window.player2.onCollide("shoot", () => {
         console.log("player2 collided with an object tagged 'shoot'");
+      });
+
+      window.player1.onCollide("shoot", () => {
+        console.log("player1 collided with an object tagged 'shoot'");
       });
   
     //  window.player2.onCollide(window.player1.id + "attackHitbox", () => {

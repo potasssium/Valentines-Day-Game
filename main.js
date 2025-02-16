@@ -5,7 +5,6 @@ window.onload = function () {
     window.player1 = null;
     window.player2 = null;
   
-    // Get the start button and screen
     const startScreen = document.getElementById("start-screen");
     const startButton = document.getElementById("start-button");
     const counterContainer = document.getElementById("counter-container");
@@ -14,7 +13,6 @@ window.onload = function () {
       const counterElement = document.getElementById("counter");
       if (!counterElement) return;
     
-      // Clear any existing interval
       if (countInterval) clearInterval(countInterval);
     
       timeLeft = 60;
@@ -25,11 +23,9 @@ window.onload = function () {
         if (timeLeft <= 0) {
           clearInterval(countInterval);
           
-          // Freeze the timer and change its appearance
-          counterElement.textContent = "0"; // Freeze at 0
-          counterElement.style.backgroundColor = "black"; // Solid background color
-          counterElement.style.color = "white"; // Contrast text color
-          // You can add any additional styling here, such as border or font size changes
+          counterElement.textContent = "0"; 
+          counterElement.style.backgroundColor = "black"; 
+          counterElement.style.color = "white"; 
           
           declareWinner();
           return;
@@ -55,8 +51,7 @@ window.onload = function () {
     }
   
     console.log("Start button found!");
-  
-    // Initialize Kaboom BEFORE calling `loadSprite()`
+
     kaboom({
       width: 1280,
       height: 720,
@@ -72,7 +67,6 @@ window.onload = function () {
     }
   
     function loadGameAssets() {
-      // Load your assets
       loadSprite("pixel-heart", "img/1.png");
       loadSprite("yes-button", "img/yes.png");
       loadSprite("no-button", "img/no.png");
@@ -146,6 +140,12 @@ window.onload = function () {
         sliceY: 1,
         anims: { death: { from: 0, to: 6, speed: 10 } },
       });
+
+      loadSprite("shoot-player2", "img/witch/Fire_2.png", {
+        sliceX: 6,
+        sliceY: 1,
+        anims: { shoot: { from: 0, to: 4, speed: 4 } },
+      });
   
       loadSprite("background", "img/5.png");
       loadSprite("mountain", "img/4.png");
@@ -162,10 +162,6 @@ window.onload = function () {
         sliceY: 1,
         anims: { spruces: { from: 0, to: 30, speed: 5}}
       })
-
-
-  
-     
     }
   
     loadGameAssets();
@@ -176,9 +172,6 @@ window.onload = function () {
       initGame();
     });
 
-   
-
-
     scene("valentine-start", () => {
         console.log("valentine scene started");
         const messages = [
@@ -187,9 +180,6 @@ window.onload = function () {
           "Will you be my Valentine?",
         ];
         
-
-       // const blackCover = add([sprite("background2"), scale(12), pos(0, -220)]);
-        //const newBG = add([sprite("background2"), scale(4), pos(0, -210)]);
         let currentMessage = 0;
         let currentChar = 0;
         let textObj = null;
@@ -230,7 +220,6 @@ window.onload = function () {
           typeNextChar();
         }
 
-    // Add floating hearts
     for (let i = 0; i < 20; i++) {
         add([
             sprite("floating-heart"),
@@ -264,37 +253,34 @@ window.onload = function () {
         "yes-btn",
       ]);
       
-      // Add text on top of the rectangle:
       const yesText = add([
         text("Yes", { size: 24, font: "sink" }),
-        pos(yesButton.pos),       // Position it exactly at the center of the button
+        pos(yesButton.pos),    
         anchor("center"),
       ]);
       
-      // Make it interactive:
       yesButton.onClick(() => {
-        console.log("Yes button clicked!");
-        console.log("Camera moving up...");
+        console.log("Yes button clicked");
+        console.log("Camera moving up");
         
         const startY = camPos().y;
         const targetY = startY - 900;
         let tweenFinished = false;
       
-        // Add the sprite ("moon") at the top with an initial opacity of 0.
         let topSprites = [];
         const moonImage = add([
           sprite("moon"),
           pos(580, 480),
-          fixed(),        // Keeps the image in the viewport
+          fixed(),        
           anchor("center"),
           scale(3),
-          opacity(0),     // Start fully transparent
+          opacity(0),     
           z(2),
         ]);
        
         const cloudImage = add([
           sprite("cloud1"),
-          pos(200, 600),  // Adjust x and y as desired
+          pos(200, 600),  
           anchor("center"),
           fixed(),
           scale(4),
@@ -304,17 +290,14 @@ window.onload = function () {
 
         const animatedSprite = add([
           sprite("falling-star"),
-          pos(300, 700),        // Change x, y to place it where you need
-          anchor("center"),     // Optionally center its origin
-          scale(5),             // Adjust scale as needed
+          pos(300, 700),        
+          anchor("center"),     
+          scale(5),             
           fixed(),
           z(3),
-          opacity(0)              // Remove this if you want it to scroll with the camera
+          opacity(0)              
         ]);
-
-        // Scale the star to a desired size (here, we use half the canvas width for example)
        
-      
         tween(
           startY,
           targetY,
@@ -323,9 +306,7 @@ window.onload = function () {
             camPos(camPos().x, v);
             console.log("cameray:", v);
             
-            // Compute a linear fraction (0 at startY and 1 at targetY)
             let fraction = (startY - v) / (startY - targetY);
-            // Apply a quadratic ease-in to that fraction
             let easedFraction = Math.pow(fraction, 2);
             moonImage.opacity = easedFraction;
             cloudImage.opacity = easedFraction;
@@ -333,8 +314,6 @@ window.onload = function () {
 
             topSprites.push(animatedSprite);
 
-            
-            // When we're close enough to the target, finalize the tween
             if (!tweenFinished && Math.abs(v - targetY) < 1) {
               tweenFinished = true;
               console.log("Tween complete, adding text...");
@@ -346,12 +325,11 @@ window.onload = function () {
                 color(255, 255, 255)
               ]);
             
-              // Use the helper to type out the message.
               typeOutText(topText, "I knew you would say yes :)", 0.08, () => {
 
               const secondText = add([
                 text("", { size: 40, font: "sink" }),
-                pos(100, 480), // Adjust Y position as needed (e.g., 150 instead of 100)
+                pos(100, 480),
                 fixed(),
                 z(200),
                 color(255, 255, 255)
@@ -360,7 +338,7 @@ window.onload = function () {
 
                 const thirdText = add([
                   text("", { size: 40, font: "sink" }),
-                  pos(100, 530), // Adjust Y position as needed (e.g., 150 instead of 100)
+                  pos(100, 530), 
                   fixed(),
                   z(200),
                   color(255, 255, 255)
@@ -368,7 +346,7 @@ window.onload = function () {
                 typeOutText(thirdText, "But thank you for putting up with me,", 0.08, () => {
                   const fourthText = add([
                     text("", { size: 40, font: "sink" }),
-                    pos(100, 600), // Adjust Y position as needed (e.g., 150 instead of 100)
+                    pos(100, 600), 
                     fixed(),
                     z(200),
                     color(255, 255, 255)
@@ -386,10 +364,8 @@ window.onload = function () {
         )
         });
       
-      
-      // Optionally, change color on hover:
       yesButton.onHover(() => {
-        yesButton.color = rgb(0, 128, 0); // Update the existing color property
+        yesButton.color = rgb(0, 128, 0); 
       });
       yesButton.onHoverEnd(() => {
         yesButton.color = rgb(148, 148, 148);
@@ -424,7 +400,6 @@ window.onload = function () {
   }
   
   typeText();
-  
   onClick(() => {
       if (!isTyping && currentMessage < messages.length - 1) {
           currentMessage++;
@@ -436,13 +411,10 @@ window.onload = function () {
       }
   });
     })
-// Accept Scene
-
 
 scene("fight", () => {
     console.log("Fight scene loaded");
 
-    // Create players for this scene
     window.player1 = makePlayer(125, 200, 16, 123, 3, "player1");
     window.player1.use(sprite(window.player1.sprites.idle));
     window.player1.play("idle");
@@ -451,12 +423,9 @@ scene("fight", () => {
     window.player2.use(sprite(window.player2.sprites.idle));
     window.player2.play("idle");
     window.player2.flipX = true;
-
-    // Start the timer and show the counter container
     startTimer();
     if (counterContainer) counterContainer.style.display = "block";
 
-    // Create background layers, ground, and invisible walls
     const background = add([sprite("background"), scale(4), pos(0, -220)]);
     add([sprite("mountain"), scale(4), pos(0, -210)]);
     add([sprite("trees"), fixed(), scale(4), pos(0, -230)]);
@@ -467,7 +436,6 @@ scene("fight", () => {
     const animatedBGs = [
       { name: "large-spruce", anim: "sprucel", pos: vec2(960, 150), scale: 6 },
       { name: "small-spruce", anim: "spruces", pos: vec2(210, 340), scale: 4 },
-      // You can add as many as you want here...
     ];
     
     animatedBGs.forEach((bg) => {
@@ -475,28 +443,27 @@ scene("fight", () => {
         sprite(bg.name),
         pos(bg.pos),
         scale(bg.scale),
-        fixed(), // if you want it to be part of the background
-        z(2),    // control layering via z-index
+        fixed(), 
+        z(2),    
       ]);
-      bgSprite.play(bg.anim); // start the animation for the sprite
+      bgSprite.play(bg.anim); 
     });
 
     for (let i = 0; i < 100; i++) {
       add([
           sprite("snowflake"),
           pos(rand(0, width()), rand(-100, 0)),
-          scale(rand(0.01, 0.03)), // very small snowflakes
+          scale(rand(0.01, 0.03)), 
           "snowflake",
-          { fallSpeed: rand(20, 50) } // random fall speed for each snowflake
+          { fallSpeed: rand(20, 50) } 
       ]);
   }
   
   onUpdate("snowflake", (flake) => {
-      flake.move(0, flake.fallSpeed); // snowflake falls at its own speed
+      flake.move(0, flake.fallSpeed); 
       if (flake.pos.y > height()) {
-          flake.pos.y = rand(-100, -10); // reset to a random position above the screen
-          flake.pos.x = rand(0, width());
-          flake.fallSpeed = rand(20, 50); // reassign a new random fall speed
+          flake.pos.y = rand(-100, -10); 
+          flake.fallSpeed = rand(20, 50); 
       }
   });
 
@@ -523,9 +490,6 @@ scene("fight", () => {
     add([rect(16, 720), area(), body({ isStatic: true }), pos(1280, 0)]);
 
     // ----------------- Player Input Handlers -----------------
-    // Handlers are added here in the fight scene so they control the active players
-
-    // Player 1 Movement
     onKeyDown("d", () => {
       run(window.player1, 500, false);
     });
@@ -585,7 +549,7 @@ scene("fight", () => {
           resetPlayerToIdle(window.player1);
           window.player1.flipX = currentFlip;
           // Launch the projectile: (player, speed, damage, enemy, projectileSprite, maxDistance)
-          shootProjectile(window.player1, 600, 50, window.player2, "shoot-player1", 500);
+          shootProjectile(window.player1, 600, 50, window.player2, "shoot-player1", 1300);
         },
       });
     });
@@ -595,10 +559,28 @@ scene("fight", () => {
 
     // Player 2 Attack
     onKeyPress("down", () => {
+      // Trigger the attack animation and hitbox (if needed)
       attack(window.player2);
-    });
-    onKeyRelease("down", () => {
-      destroyAll(window.player2.id + "attackHitbox");
+      if (window.player2.health === 0) return;
+      const currentFlip = window.player2.flipX;
+      window.player2.use(sprite(window.player2.sprites.attack));
+      window.player2.flipX = currentFlip;
+      window.player2.play("attack", {
+        onEnd: () => {
+          resetPlayerToIdle(window.player2);
+          window.player2.flipX = currentFlip;
+          // Launch player2's projectile aimed at player1
+          // Adjust parameters (speed, damage, sprite, maxDistance) as desired
+          shootProjectile(
+            window.player2,      // shooter
+            600,                 // speed
+            50,                  // damage
+            window.player1,      // target enemy
+            "shoot-player2",     // projectile sprite (make sure to load this asset)
+            1300                 // maxDistance
+          );
+        }
+      });
     });
 
     // ----------------- Health Bars and Collisions -----------------
@@ -607,7 +589,6 @@ scene("fight", () => {
     window.player1.healthUI = player1HealthUI;
     window.player2.healthUI = player2HealthUI;
 
-    // Store health bars in the player objects for collision handlers
     window.player1.healthUI = player1HealthUI;
     window.player2.healthUI = player2HealthUI;
 
@@ -625,24 +606,25 @@ scene("fight", () => {
           gameOver = true;
         }
       });
-  
-      window.player2.onCollide(window.player1.id + "attackHitbox", () => {
-        if (gameOver) return;
-        if (window.player2.health !== 0) {
-          window.player2.health -= 50;
-          updateHealthBarUI(window.player2.healthUI, window.player2.health);
-        }
-        if (window.player2.health === 0) {
-          clearInterval(countInterval);
-          declareWinner();
-          gameOver = true;
-        }
-      });
-    }
-    // Collision handlers for attacks
-    
 
-    // Transition overlay to fade in the fight scene
+      window.player2.onCollide("shoot", () => {
+        console.log("player2 collided with an object tagged 'shoot'");
+      });
+  
+    //  window.player2.onCollide(window.player1.id + "attackHitbox", () => {
+     //   if (gameOver) return;
+     //   if (window.player2.health !== 0) {
+    //      window.player2.health -= 50;
+     //     updateHealthBarUI(window.player2.healthUI, window.player2.health);
+     //   }
+   //     if (window.player2.health === 0) {
+    //      clearInterval(countInterval);
+    //      declareWinner();
+  //        gameOver = true;
+   //     }
+ //     });
+    }
+
     const transition = add([
       rect(width(), height()),
       color(0, 0, 0),
@@ -661,8 +643,6 @@ scene("fight", () => {
       easings.easeInOutQuad
     );
   });
-  // Collision handlers for attacks
-
 
 
   scene("reject-scene", () => {
@@ -721,8 +701,8 @@ scene("fight", () => {
     const container = add([
       rect(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT),
       pos(x, y),
-      color(50, 50, 50), // dark gray background
-      outline(4, rgb(255, 255, 255)), // white border
+      color(50, 50, 50), 
+      outline(4, rgb(255, 255, 255)), 
       anchor("topleft"),
     ]);
     const bar = add([
@@ -755,7 +735,6 @@ scene("fight", () => {
       result = "You thought you could beat me, huh? Now you're my Valentine :).";
     }
 
-    // Create a kaboom text object to show the winner message
     const winnerTextObj = add([
       text(result, { size: 48, font: "sink" }),
       pos(center()),
@@ -773,11 +752,6 @@ scene("fight", () => {
     });
   }
     
-  
-    // Create a kaboom text object to show the winner message
-
-    
-
     function makePlayer(posX, posY, width, height, scaleFactor, id) {
       console.log(`Creating player ${id} at (${posX}, ${posY})`);
       return add([
@@ -787,9 +761,9 @@ scene("fight", () => {
         area({ shape: new Rect(vec2(0), width, height) }),
         anchor("center"),
         body({ stickToPlatform: true }),
-        id, // <-- add the id as a tag so that onCollide can detect it
+        id, 
         {
-          id: id, // also store it in the object for reference
+          id: id, 
           isCurrentlyJumping: false,
           health: 500,
           sprites: {
@@ -805,7 +779,6 @@ scene("fight", () => {
 
   setGravity(1200);
 
-  // Movement and Combat Helper Functions
   function run(player, speed, flipPlayer) {
     if (player.health === 0) return;
     if (player.curAnim() !== "run" && !player.isCurrentlyJumping) {
@@ -847,53 +820,64 @@ scene("fight", () => {
     const projectile = add([
       sprite(projectileSprite),
       pos(startPos),
+      anchor("center"),
       scale(2),
-      area(),
+      area({ width: 100, height: 100 }),
       move(vec2(dir, 0), speed),
-      "projectile",
-      { startPos }
+      "shoot",
+      { startPos, source: player } // tag the projectile with its shooter
     ]);
-  
-    // Optionally play an animation on the projectile if defined
+    
+    // Optionally play the shoot animation if available
     if (projectile.play) {
       try {
         projectile.play("shoot");
-      } catch (e) {
-        // If no "shoot" animation, ignore the error.
-      }
+      } catch (e) {}
     }
-  
-    // Check if the projectile has traveled too far and destroy it if so.
+    
     projectile.onUpdate(() => {
       if (Math.abs(projectile.pos.x - projectile.startPos.x) >= maxDistance) {
         destroy(projectile);
       }
     });
-  
-    projectile.onCollide(enemy.id, () => {
-      if (enemy.health > 0) {
-        enemy.health -= damage;
-        tween(
-          enemy.healthBar.width,
-          enemy.health,
-          1,
-          (val) => { enemy.healthBar.width = val; },
-          easings.easeOutSine
-        );
-        try {
-          enemy.play("hurt");
-        } catch (e) {}
-      }
+    
+    // In the collision callback, ignore collisions with the shooter (source)
+    projectile.onCollide((obj) => {
+      // Ignore if colliding with the shooter
+      if (obj === projectile.source) return;
       
-      if (enemy.health <= 0) {
-        clearInterval(countInterval);
-        declareWinner();
-        gameOver = true;
+      // Only apply damage if the object is the enemy
+      if (obj.is(enemy.id)) {
+        console.log("Projectile collided with enemy", enemy.id);
+        if (enemy.health > 0) {
+          enemy.health -= damage;
+          console.log("Enemy health is now:", enemy.health);
+          tween(
+            enemy.healthUI.bar.width,
+            (HEALTH_BAR_WIDTH - 4) * (enemy.health / enemy.healthUI.maxHealth),
+            1,
+            (val) => {
+              enemy.healthUI.bar.width = val;
+            },
+            easings.easeOutSine
+          );
+          try {
+            enemy.play("hurt");
+          } catch (e) {}
+        }
+        
+        if (enemy.health <= 0) {
+          clearInterval(countInterval);
+          declareWinner();
+          gameOver = true;
+        }
+        
+        destroy(projectile);
       }
-      
-      destroy(projectile);
     });
   }
+  
+  
   
 
   function attack(player) {

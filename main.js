@@ -537,6 +537,11 @@ scene("fight", () => {
     });
     window.player2.onUpdate(() => resetAfterJump(window.player2));
 
+    onKeyRelease("down", () => {
+      destroyAll(window.player2.id + "attackHitbox");
+    });
+    
+
     // Player 1 Attack
     onKeyPress("space", () => {
       attack(window.player1);
@@ -825,10 +830,9 @@ scene("fight", () => {
       area({ width: 100, height: 100 }),
       move(vec2(dir, 0), speed),
       "shoot",
-      { startPos, source: player } // tag the projectile with its shooter
+      { startPos, source: player } 
     ]);
     
-    // Optionally play the shoot animation if available
     if (projectile.play) {
       try {
         projectile.play("shoot");
@@ -841,12 +845,9 @@ scene("fight", () => {
       }
     });
     
-    // In the collision callback, ignore collisions with the shooter (source)
     projectile.onCollide((obj) => {
-      // Ignore if colliding with the shooter
-      if (obj === projectile.source) return;
-      
-      // Only apply damage if the object is the enemy
+      if (obj === projectile.source.id) return;
+
       if (obj.is(enemy.id)) {
         console.log("Projectile collided with enemy", enemy.id);
         if (enemy.health > 0) {
@@ -876,9 +877,6 @@ scene("fight", () => {
       }
     });
   }
-  
-  
-  
 
   function attack(player) {
     if (player.health === 0) return;
@@ -889,7 +887,7 @@ scene("fight", () => {
       const slashX = player.pos.x + 30;
       const slashXFlipped = player.pos.x - 350;
       const slashY = player.pos.y - 200;
-      add([
+      const hitbox = add([
         rect(300, 300),
         area(),
         pos(currentFlip ? slashXFlipped : slashX, slashY),
@@ -900,8 +898,10 @@ scene("fight", () => {
         onEnd: () => {
           resetPlayerToIdle(player);
           player.flipX = currentFlip;
+          destroy(hitbox); 
         },
       });
     }
   }
+  
 };
